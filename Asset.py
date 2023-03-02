@@ -47,3 +47,18 @@ class Crypto:
                                              close=klines['close'])])
 
         fig.show()
+
+    @staticmethod
+    def get_orderbook(client: Client, ticker: str, limit: int=10) -> pd.DataFrame:
+        """ bid/ask """
+        depth = client.depth(ticker, limit=limit)
+        depth_df = pd.DataFrame(depth)
+        return depth_df
+
+    @staticmethod
+    def get_recent_trades(client: Client, ticker: str, limit: int=10) -> pd.DataFrame:
+        # isBuyerMaker = True => sell transaction, isBuyerMaker = False => buy transaction
+        trades = client.trades(ticker, limit=limit)
+        trades_df = pd.DataFrame(trades)
+        trades_df['time'] = pd.to_datetime(trades_df['time'], unit='ms')
+        return trades_df
